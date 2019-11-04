@@ -183,7 +183,7 @@ Hopefully, you should see the mesh2 cluster in that list with the IP and port we
 
 The image below shows how we've configured the Grey Matter objects so far:
 
-![](./assets/pingpong2-diagram.png)
+![](./assets/pingpong-diagram2.png)
 
 ## Playing ping pong
 
