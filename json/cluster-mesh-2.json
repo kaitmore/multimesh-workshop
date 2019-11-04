@@ -1,0 +1,26 @@
+{
+  "cluster_key": "cluster-mesh-2",
+  "zone_key": "zone-default-zone",
+  "name": "mesh2",
+  "instances": [
+    {
+      "host": "x.x.x.x",
+      "port": 30000
+    }
+  ],
+  "circuit_breakers": null,
+  "outlier_detection": null,
+  "health_checks": [],
+  "require_tls": true,
+  "ssl_config": {
+    "cipher_filter": "",
+    "protocols": null,
+    "cert_key_pairs": [
+      {
+        "certificate_path": "/etc/proxy/tls/sidecar/server.crt",
+        "key_path": "/etc/proxy/tls/sidecar/server.key"
+      }
+    ],
+    "trust_file": "/etc/proxy/tls/sidecar/ca.crt"
+  }
+}

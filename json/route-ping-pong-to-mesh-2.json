@@ -1,0 +1,13 @@
+{
+  "route_key": "route-ping-pong-to-mesh-2",
+  "domain_key": "domain-ping-pong",
+  "zone_key": "zone-default-zone",
+  "path": "/mesh2/",
+  "prefix_rewrite": "/",
+  "redirects": null,
+  "shared_rules_key": "mesh-2-shared-rules",
+  "rules": null,
+  "response_data": {},
+  "cohort_seed": null,
+  "retry_policy": null
+}

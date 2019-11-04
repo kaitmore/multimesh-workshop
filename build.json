@@ -1,0 +1,88 @@
+{
+  "variables": {
+    "region": "us-east-1"
+  },
+  "builders": [
+    {
+      "type": "amazon-ebs",
+      "profile": "default",
+      "region": "{{user `region`}}",
+      "instance_type": "t2.large",
+      "source_ami": "ami-0a8582177e6a57ebb",
+      "ssh_username": "ubuntu",
+      "ami_name": "gm-lite-install",
+      "ami_description": "Amazon Linux Image with Docker-CE",
+      "run_tags": {
+        "Name": "packer-builder-docker",
+        "Tool": "Packer",
+        "Author": "kaitmore"
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sudo minikube start --memory 6144 --cpus 4 --vm-driver=none",
+        "sudo chown -R $USER $HOME/.kube $HOME/.minikube",
+        "sudo apt-get update",
+        "sudo apt-get -y install jq"
+      ]
+    },
+    {
+      "type": "file",
+      "source": "./certs/client.crt",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./certs/client.key",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": ".profile",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./template.yaml",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./gmsetup.sh",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./greymatter",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./json/cluster-mesh-2.json",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./json/route-egress-to-mesh-2.json",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./json/route-ping-pong-to-mesh-2.json",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "../json/route-ping-pong-to-mesh-2-slash.json",
+      "destination": "~/"
+    },
+    {
+      "type": "file",
+      "source": "./json/shared-rule-mesh-2.json",
+      "destination": "~/"
+    }
+  ]
+}
