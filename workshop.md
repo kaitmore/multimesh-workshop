@@ -207,7 +207,7 @@ hitting back to: https://localhost:8080/mesh2/services/ping-pong/latest/ping?pau
 sleeping for 1 s
 ```
 
-Hit `ctrl+c` to exit the logs.
+When the ball goes out of bounds, the game is over! Hit `ctrl+c` to exit the logs.
 
 ## Multimesh Communication: Part II Egress Edge Proxy Setup
 
