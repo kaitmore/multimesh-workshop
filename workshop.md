@@ -48,7 +48,7 @@ When we configure the mesh, the Control API sends our updates off to Control. Co
 
 ## Configuring the Mesh
 
-We've talked about the "physical" components of the mesh (as physical as software can be) - a proxy, a discovery/configuration service, and an API service.
+We've talked about the "physical" components of the mesh - a proxy, a discovery/configuration service, and an API service.
 
 The Grey Matter API implements an abstraction layer on top of this software. This takes the form of json objects, each with unique roles.
 
@@ -59,7 +59,7 @@ Note down any questions you have while going through this. Try not to get too ca
 **The WHO**: objects that make up the identity of the service
 
 - `domain`: You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access.
-- `proxy`: This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label.
+- `proxy`: This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. 
 - `listener`: Defines the host, port, and protocol for a proxy within the mesh.
 
 **The HOW**: objects that define how a service handles requests
