@@ -1,6 +1,14 @@
 # Multimesh workshop
 
-This repo contains all the materials for Decipher's multimesh workshop. To get started you will need to deploy an AWS instance using the AMI `ami-01c64bbddbbb64adf`.
+## Requirements
+
+- deployed EC2 instance
+- Decipher quickstart certs
+- Decipher nexus login
+
+## Deploying an EC2 instance
+
+To get started you will need to deploy an AWS instance using the AMI `ami-01c64bbddbbb64adf`.
 
 First, create a new security group with a TCP rule to allow traffic on port `30000` and enable SSH connections:
 
