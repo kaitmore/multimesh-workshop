@@ -137,7 +137,7 @@ Open `cluster-mesh-2.json` by running `vim cluster-mesh-2.json`. There are a cou
 - The `ssl_config` field defines the credentials that are expected to be present on disk when a proxy routes to this cluster. This has already been filled out for you and the client certs for the Edge node have been added to the Ping Pong sidecar.
 - Notice that the cluster object doesn't link to any other object except the very top level zone object. Clusters can link to as many services as you want via `shared_rules`.
 
-Fill in the instances array with the IP that you noted from your partner. Save the file and run:
+To edit the file, hit `i` for interactive mode. Fill in the instances array with the IP that you noted from your partner. Hit `esc` and then `:wq` to save the file. To apply the file, run:
 
 ```sh
 greymatter create cluster < cluster-mesh-2.json
@@ -147,7 +147,7 @@ Double check that you see your partner's IP address in the instances array.
 
 ### Configuring the shared_rules
 
-Next, we'll create a shared_rule that points to the cluster we just made. You can think of `shared_rules` like traffic management configuration. Take a look at `shared-rule-mesh-2.json` and notice how it directs requests to the `cluster-mesh-2` we just created.
+Next, we'll create a shared_rule that points to the cluster we just made. You can think of `shared_rules` like traffic management configuration. Run `cat shared-rule-mesh-2.json` and notice how it directs requests to the `cluster-mesh-2` we just created.
 
 ```sh
 greymatter create shared_rules < shared-rule-mesh-2.json
@@ -155,7 +155,7 @@ greymatter create shared_rules < shared-rule-mesh-2.json
 
 ### Configuring the routes
 
-Finally we can create the route objects, which connect the mesh-2 cluster with the Ping Pong service. Open `route-ping-pong-to-mesh-2.json` and `route-ping-pong-to-mesh-2-slash.json`. Notice how they both point to the `shared_rules` object we just created.
+Finally we can create the route objects, which connect the mesh-2 cluster with the Ping Pong service. Run `cat route-ping-pong-to-mesh-2.json` and `cat route-ping-pong-to-mesh-2-slash.json`. Notice how they both point to the `shared_rules` object we just created.
 
 - This is where we actually define a route for a particular proxy through the domain `domain-ping-pong`. If we wanted a different service to know about the mesh-2 cluster, we would need to create a new route using that service's domain, pointing to the same shared_rules object.
 - The `prefix_rewrite` field is what the request will look like when the request hits the target cluster.
