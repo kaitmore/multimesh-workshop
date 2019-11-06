@@ -71,11 +71,11 @@ Note down any questions you have while going through this. Try not to get too ca
 
 - `cluster`: Lists IP addresses and ports where requests can be sent
 
-Below you'll see a visualization of how the Ping Pong service is configured. `domain` is the parent object of `proxy`, `listener`, and `route`. There is only one route defined for this service, the root route `/`, which points to the ping-pong service cluster via a `shared_rules` definition.
+Below you'll see a visualization of how the Ping Pong service is configured and how all these objects relate to one another. Circles overlap where the objects link. `domain` is the parent object of `proxy`, `listener`, and `route`. There is only one route defined for this service, the root route `/`, which points to the ping-pong service cluster via a `shared_rules` definition.
 
 An important thing to note here is that the Ping Pong cluster is not directly tied to the service itself. This cluster object can be used by any other service via a route:
 
-![](./assets/pingpong-diagram.png)
+![ping-pong-config-1](./assets/pingpong-diagram.png)
 
 _\*When we talk about a "Service" in the mesh, we are referring to a pair of sidecar + service. Remember, the sidecar is what really represents the service as a "citizen" of the mesh._
 
@@ -83,7 +83,7 @@ _\*When we talk about a "Service" in the mesh, we are referring to a pair of sid
 
 Let's take a second to talk about how a service knows about other network addressable locations, whether that location is another service in the mesh, a serverless function, or a completely different mesh altogether! We'll use the Ping Pong service as an example.
 
-In your terminal, run the following command, which will exec into the Ping Pong service sidecar and hit the admin endpoint to list all the clusters. This is how we can see what configuration the sidecar got from GM Control*.
+In your terminal, run the following command, which will exec into the Ping Pong service sidecar and hit the admin endpoint to list all the clusters this sidecar knows about. This is how we can see what configuration the sidecar got from GM Control*.
 
 ```sh
 kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar curl localhost:8001/clusters
@@ -104,13 +104,9 @@ service::0.0.0.0:3000::cx_total::0
 
 The Ping Pong sidecar knows about 2 other `clusters`: GM Control (`xds_cluster`), e.g., the thing that gave it it's configuration, and the actual Ping Pong `service`. From the Ping Pong sidecar's point of view, these are the only clusters that exist in the mesh!
 
+To get a service to "know about" another and end up in that list of clusters, we need to configure 3 objects: `cluster`, `route`, and `shared_rules`. If you scroll back up to the Ping Pong configuration diagram, you'll see how the route is really the link between the service and the cluster.
+
 > _Try comparing the Ping Pong service clusters to the Edge service clusters. How and why are they different? To see edge clusters, you can run `kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^edge') curl http://localhost:8001/clusters`_
-
-To get a service to "know about" another and end up in that list of clusters, we need to configure 3 objects: `cluster`, `route`, and `shared_rules`.
-
-To recap: the `route` defines the path, the `cluster` says where the thing lives, and the `shared_rules` object tells it how to get there.
-
-> _Use the cli to figure out how clusters, routes and shared_rules objects are linked._
 
 _*The admin endpoint is a great tool for debugging the mesh. All the proxies in this mesh are deployed with the admin port exposed on 8001. There are many other endpoints besides /cluster that you can explore to understand how the proxy was configured._
 
