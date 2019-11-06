@@ -32,7 +32,7 @@ This network of proxies is what we mean when we say _mesh_.
 
 _Image: A diagram representing a network of services and sidecars. The green box represents a service and the blue is the network of sidecars._
 
-> Quiz: True or false: The Edge proxy and the Grey Matter sidecar are two different pieces of software with unique roles.
+> True or false: The Edge proxy and the Grey Matter sidecar are two different pieces of software with unique roles.
 
 ## Controlling the mesh
 
@@ -104,7 +104,7 @@ service::0.0.0.0:3000::cx_total::0
 
 The Ping Pong sidecar knows about 2 other `clusters`: GM Control (`xds_cluster`), e.g., the thing that gave it it's configuration, and the actual Ping Pong `service`. From the Ping Pong sidecar's point of view, these are the only clusters that exist in the mesh!
 
-> _Try comparing the Ping Pong service clusters to the Edge service clusters. How and why are they different? To exec into the edge container, you can run: `kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^edge') /bin/sh` and then `curl http://localhost:8001/clusters`_
+> _Try comparing the Ping Pong service clusters to the Edge service clusters. How and why are they different? To see edge clusters, you can run `kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^edge') curl http://localhost:8001/clusters`_
 
 To get a service to "know about" another and end up in that list of clusters, we need to configure 3 objects: `cluster`, `route`, and `shared_rules`.
 
