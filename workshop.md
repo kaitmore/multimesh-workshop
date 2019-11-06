@@ -83,12 +83,10 @@ _\*When we talk about a "Service" in the mesh, we are referring to a pair of sid
 
 Let's take a second to talk about how a service knows about other network addressable locations, whether that location is another service in the mesh, a serverless function, or a completely different mesh altogether! We'll use the Ping Pong service as an example.
 
-In your terminal, run the following command, which does a port-forward to the Ping Pong sidecar's admin endpoint. This is how we can see what configuration the sidecar got from GM Control.
+In your terminal, run the following command, which will exec into the Ping Pong service sidecar and hit the admin endpoint to list all the clusters. This is how we can see what configuration the sidecar got from GM Control*.
 
 ```sh
-kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar /bin/sh
-
-curl http://localhost:8001/clusters
+kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar curl localhost:8001/clusters
 ```
 
 This endpoint lists all the `clusters`, or network addresable locations, that our Ping Pong Service has been configured to route to. You should see something like:
@@ -112,9 +110,9 @@ To get a service to "know about" another and end up in that list of clusters, we
 
 To recap: the `route` defines the path, the `cluster` says where the thing lives, and the `shared_rules` object tells it how to get there.
 
-Hit `ctrl+D` to exit the Ping Pong sidecar container.
-
 > _Use the cli to figure out how clusters, routes and shared_rules objects are linked._
+
+_*The admin endpoint is a great tool for debugging the mesh. All the proxies in this mesh are deployed with the admin port exposed on 8001. There are many other endpoints besides /cluster that you can explore to understand how the proxy was configured._
 
 ## Multimesh Communication: Part I Service to Ingress Edge Setup
 
@@ -174,12 +172,10 @@ greymatter create route < route-ping-pong-to-mesh-2.json
 Let's check the Ping Pong sidecar's clusters to confirm everything is working correctly.
 
 ```sh
-kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar /bin/sh
-
-curl http://localhost:8001/clusters
+kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar curl localhost:8001/clusters
 ```
 
-Hopefully, you should see the mesh2 cluster in that list with the IP and port we configured. Go ahead and hit `ctrl+D` to exit.
+Hopefully, you should see the mesh2 cluster in that list with the IP and port we configured.
 
 The image below shows how we've configured the Grey Matter objects so far:
 
@@ -228,9 +224,7 @@ greymatter create route < route-egress-to-mesh-2.json
 Let's confirm that we've set up all the routes correctly for egress-edge. Hit the admin endpoint of the egress-edge proxy by running:
 
 ```sh
-kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^egress-edge') /bin/sh
-
-curl http://localhost:8001/clusters
+kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^egress-edge') curl localhost:8001/clusters
 ```
 
 You should see something like:
@@ -256,7 +250,7 @@ In another tab, initiate the game just like we did before:
 
 `curl -k --cert client.crt --key client.key https://$PUBLIC_IP:30000/services/ping-pong/latest/serve`
 
-The game should look exactly as it did in the previous setup. Once someone wins, hit `ctrl+d` to exit the logs. Now take a look at the logs for our egress-edge proxy:
+The game should look exactly as it did in the previous setup. Once someone wins, hit `ctrl+c` to exit the logs. Now take a look at the logs for our egress-edge proxy:
 
 ```sh
 kubectl logs $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^egress-edge') -f
