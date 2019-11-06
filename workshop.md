@@ -118,7 +118,8 @@ _*The admin endpoint is a great tool for debugging the mesh. All the proxies in 
 
 Now that we understand the configuration that makes up a service and how we can get a service to "know" about another, let's apply this knowledge to our first multimesh example.
 
-The goal is for the Ping Pong service in your mesh to talk to the Ping Pong service in your partner's mesh. The request should travel from the service, to your partner's Edge node, to your partner's Ping Pong service:
+The goal is for the Ping Pong service in your mesh to talk to the Ping Pong service in your partner's mesh. This service is simply a [passthrough service](https://github.com/dgoldstein1/passthough-service) that has been configured to make requests to `/mesh2/services/ping-pong/latest/` when you /ping it.
+The request should travel from the service, to your partner's Edge node, to your partner's Ping Pong service:
 
 ![](./assets/svc-to-meshb.png)
 
@@ -217,7 +218,7 @@ Run `greymatter edit route route-ping-pong-to-mesh-2-slash` and update the share
 
 Create a route for the egress cluster <-> mesh #2:
 
-```
+```sh
 greymatter create route < route-egress-to-mesh-2.json
 ```
 
@@ -257,3 +258,8 @@ kubectl logs $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{
 ```
 
 You should see all the requests from the Ping Pong service.
+
+## Authors
+Kaitlin Moreno - kaitlin.moreno@deciphernow.com
+
+Thanks to [David Goldstein](http://www.davidcharlesgoldstein.com) for his work developing the multimesh Ping Pong example!
