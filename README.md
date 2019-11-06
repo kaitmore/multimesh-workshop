@@ -8,7 +8,7 @@
 
 ## Deploying an EC2 instance
 
-To get started you will need to deploy an AWS instance using the AMI `ami-01c64bbddbbb64adf`.
+To get started you will need to deploy an AWS instance using the AMI `ami-01e87069a6d77296d`.
 
 First, create a new security group with a TCP rule to allow traffic on port `30000` and enable SSH connections:
 
@@ -26,7 +26,8 @@ You'll also need to get the name of the key-pair you use to login to AWS ec2 ins
 Using the security group ID returned from the first command and your key name, execute:
 
 ```sh
-aws ec2 run-instances --image-id ami-01c64bbddbbb64adf --count 1 --key-name <key-pair-name> --instance-type t2.large --security-group-ids <security-group-id>
+aws ec2 run-instances --image-id ami-01e87069a6d77296d
+ --count 1 --key-name <key-pair-name> --instance-type t2.large --security-group-ids <security-group-id>
 ```
 
 Once the instance is up, you can start working through the [workshop material.](https://github.com/kaitmore/multimesh-workshop/blob/master/workshop.md)

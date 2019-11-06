@@ -165,7 +165,7 @@ data:
       "clusterID": "",
       "meshID": "",
       "enableInstanceMetrics": true,
-      "enableHistoricalMetrics": true,
+      "enableHistoricalMetrics": false,
       "metricsTemplate": "",
       "metricsPort": 8081
     }
@@ -194,7 +194,7 @@ data:
       "clusterID": "",
       "meshID": "",
       "enableInstanceMetrics": true,
-      "enableHistoricalMetrics": true,
+      "enableHistoricalMetrics": false,
       "metricsTemplate": "",
       "metricsPort": 8081
     }
@@ -223,7 +223,7 @@ data:
       "clusterID": "",
       "meshID": "",
       "enableInstanceMetrics": true,
-      "enableHistoricalMetrics": true,
+      "enableHistoricalMetrics": false,
       "metricsTemplate": "",
       "metricsPort": 8081
     }
@@ -252,7 +252,7 @@ data:
       "clusterID": "",
       "meshID": "",
       "enableInstanceMetrics": true,
-      "enableHistoricalMetrics": true,
+      "enableHistoricalMetrics": false,
       "metricsTemplate": "",
       "metricsPort": 8081
     }
@@ -2213,7 +2213,7 @@ data:
       "clusterID": "ping-pong",
       "meshID": "",
       "enableInstanceMetrics": true,
-      "enableHistoricalMetrics": true,
+      "enableHistoricalMetrics": false,
       "metricsTemplate": "",
       "metricsPort": 8081
     }
@@ -2524,7 +2524,7 @@ data:
       "clusterID": "",
       "meshID": "",
       "enableInstanceMetrics": true,
-      "enableHistoricalMetrics": true,
+      "enableHistoricalMetrics": false,
       "metricsTemplate": "",
       "metricsPort": 8081
     }

@@ -56,11 +56,6 @@
     },
     {
       "type": "file",
-      "source": "./greymatter",
-      "destination": "~/"
-    },
-    {
-      "type": "file",
       "source": "./json/cluster-mesh-2.json",
       "destination": "~/"
     },
@@ -76,7 +71,7 @@
     },
     {
       "type": "file",
-      "source": "../json/route-ping-pong-to-mesh-2-slash.json",
+      "source": "./json/route-ping-pong-to-mesh-2-slash.json",
       "destination": "~/"
     },
     {
