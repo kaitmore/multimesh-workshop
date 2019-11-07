@@ -218,6 +218,10 @@ Next, create a route for the egress cluster <-> mesh #2:
 greymatter create route < route-egress-to-mesh-2.json
 ```
 
+Here's a diagram of the configuration we just implemented:
+
+![](./assets/pingpong-diagram3.png)
+
 Let's confirm that we've set up all the routes correctly for egress-edge. Hit the admin endpoint of the egress-edge proxy by running:
 
 ```sh
