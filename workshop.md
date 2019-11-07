@@ -118,8 +118,8 @@ The goal is for the Ping Pong service in your mesh to talk to the Ping Pong serv
 The request should travel from the service, to your partner's Edge node, to your partner's Ping Pong service:
 
 > _Think through how you would implement the diagram below using the CLI. Talk it out with your partner._
-![](./assets/svc-to-meshb.png)
 
+![](./assets/svc-to-meshb.png)
 
 ### Configuring the cluster
 
