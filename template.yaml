@@ -2641,21 +2641,6 @@ data:
         }
       }
     }
-  route.json: |-
-    {
-      "route_key": "route-egress-edge",
-      "domain_key": "domain-egress-edge",
-      "zone_key": "zone-default-zone",
-      "path": "/",
-      "prefix_rewrite": null,
-      "redirects": null,
-      "shared_rules_key": "shared-rules-egress-edge",
-      "rules": null,
-      "response_data": {},
-      "cohort_seed": null,
-      "retry_policy": null
-    }
-
   shared_rules.json: |-
     {
       "shared_rules_key": "shared-rules-egress-edge",
