@@ -8,7 +8,7 @@
 
 ## Deploying an EC2 instance
 
-To get started you will need to deploy an AWS instance using the AMI `ami-01e87069a6d77296d`.
+To get started you will need to deploy an AWS instance using the AMI `ami-0a8582177e6a57ebb`.
 
 First, create a new security group with a TCP rule to allow traffic on port `30000` and enable SSH connections:
 
@@ -26,7 +26,7 @@ You'll also need to get the name of the key-pair you use to login to AWS ec2 ins
 Using the security group ID returned from the first command and your key name, execute:
 
 ```sh
-aws ec2 run-instances --image-id ami-01e87069a6d77296d
+aws ec2 run-instances --image-id ami-0a8582177e6a57ebb
  --count 1 --key-name <key-pair-name> --instance-type t2.large --security-group-ids <security-group-id>
 ```
 

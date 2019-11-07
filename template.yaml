@@ -2540,7 +2540,7 @@ data:
     {
       "cluster_key": "cluster-egress-edge",
       "zone_key": "zone-default-zone",
-      "name": "service",
+      "name": "egress-edge",
       "instances": [
         {
             "host": "0.0.0.0",

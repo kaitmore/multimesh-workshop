@@ -189,7 +189,7 @@ You and your partner should follow the logs for the Ping Pong service in your re
 kubectl logs $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c ping-pong -f
 ```
 
-Pick **one** person to initiate the game and run the follow command in another tab.
+Pick **one** person to initiate the game and run the following command in another tab.
 
 `curl -k --cert client.crt --key client.key https://$PUBLIC_IP:30000/services/ping-pong/latest/serve`
 
@@ -211,9 +211,9 @@ The second configuration uses an _egress_ edge proxy, which acts as a bridge bet
 
 There is already an `egress-edge` proxy deployed into your environment, we'll just need to tweak the configuration to make this work.
 
-Run `greymatter edit route route-ping-pong-to-mesh-2-slash` and update the shared_rules_key to `shared-rules-egress-edge`. Do the same for `route-ping-pong-to-mesh-2`.
+Run `greymatter edit route route-ping-pong-to-mesh-2-slash`, hit `i` to enter interactive mode, and update the `shared_rules_key` to `shared-rules-egress-edge`. To save and apply, run `:wq`. Do the same for `route-ping-pong-to-mesh-2`.
 
-Create a route for the egress cluster <-> mesh #2:
+Next, create a route for the egress cluster <-> mesh #2:
 
 ```sh
 greymatter create route < route-egress-to-mesh-2.json
@@ -236,6 +236,9 @@ mesh2::54.80.76.176:30000::cx_active::0
 mesh2::54.80.76.176:30000::cx_connect_fail::0
 mesh2::54.80.76.176:30000::cx_total::2
 ...
+service::0.0.0.0:8080::cx_active::0
+service::0.0.0.0:8080::cx_connect_fail::0
+service::0.0.0.0:8080::cx_total::0
 ```
 
 Follow the logs for Ping Pong again:
