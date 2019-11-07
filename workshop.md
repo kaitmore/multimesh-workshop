@@ -173,7 +173,7 @@ Let's check the Ping Pong sidecar's clusters to confirm everything is working co
 kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar curl localhost:8001/clusters
 ```
 
-Hopefully, you should see the mesh2 cluster in that list with the IP and port we configured.
+If the configuration was successful, you should see the mesh2 cluster somewhere in that list with the IP and port we configured. 
 
 The image below shows how we've configured the Grey Matter objects so far:
 
