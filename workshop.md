@@ -61,13 +61,13 @@ Read through each object and run the corresponding command to see an example. No
 **The WHO**: objects that make up the identity of the service
 
 - **domain**: `greymatter get domain domain-ping-pong` You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access. It also handles ingress TLS configuration, i.e. connections between proxies.
-- **proxy**: `greymatter get proxy proxy-ping-pong` This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. This is the place to add filters to the proxy, which is like middlew
+- **proxy**: `greymatter get proxy proxy-ping-pong` This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. This is the place to add filters to the proxy which is like middleware.
 - **listener**: `greymatter get listener listener-ping-pong` Defines the host, port, and protocol for a proxy within the mesh.
 
 **The HOW**: objects that define how a service handles requests
 
-- **route**: `greymatter get route route-ping-pong` Defines a path that the proxy knows about. _"When a request comes in with the path `/ping`, I should do something about it!"_
-- **shared_rules**: `greymatter get shared_rules shared-rules-ping-pong` This object sets up traffic rules, telling the proxy how to route a path. This is where you could implement traffic shadowing or A/B testing.
+- **route**: `greymatter get route route-ping-pong` Registers a path with the proxy and configures any necessary path rewrites or redirects
+- **shared_rules**: `greymatter get shared_rules shared-rules-ping-pong` Sets up traffic rules, telling the proxy how to route a path. This is where you control load balancing and could implement traffic shadowing or A/B testing.
 
 **The WHERE**: The object that tells a service where other network-addressable things live
 
