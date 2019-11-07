@@ -235,10 +235,6 @@ xds_cluster::10.104.2.48:50000::cx_total::6
 mesh2::54.80.76.176:30000::cx_active::0
 mesh2::54.80.76.176:30000::cx_connect_fail::0
 mesh2::54.80.76.176:30000::cx_total::2
-...
-egress-edge::0.0.0.0:8080::cx_active::0
-egress-edge::0.0.0.0:8080::cx_connect_fail::0
-egress-edge::0.0.0.0:8080::cx_total::0
 ```
 
 Follow the logs for Ping Pong again:
