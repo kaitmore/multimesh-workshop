@@ -50,26 +50,28 @@ When we configure the mesh, the Control API sends our updates off to Control. Co
 
 We've talked about the "physical" components of the mesh - a proxy, a discovery/configuration service, and an API service.
 
-The Grey Matter API implements an abstraction layer on top of this software. This takes the form of json objects, each with unique roles.
+The Grey Matter API implements an abstraction layer on top of this software. This takes the form of json objects, each with unique roles that logically isolate parts of the configuration for fine-grained control and modularity.
 
-Here are the Grey Matter API objects that represent a service\* in the mesh. These configurations answer the questions, "Who am I?" "How should I handle requests?" and "Where do other services live?" Take a second to peruse the mesh configuration in your terminal by running `greymatter list <object>` as you read through each object.
+Here are the Grey Matter API objects that represent a service\* in the mesh. These configurations answer the questions, "Who am I?" "How should I handle requests?" and "Where do other services live?"
 
-Note down any questions you have while going through this. Try not to get too caught up in the details here, focus on understanding the general purpose behind each object.
+_\*When we talk about a "Service" in the mesh, we are referring to a pair of sidecar + service. Remember, the sidecar is what really represents the service as a "citizen" of the mesh._
+
+Read through each object and run the corresponding command to see an example. Note down any questions you have while going through this. Try not to get too caught up in the details here, focus on understanding the general purpose behind each object.
 
 **The WHO**: objects that make up the identity of the service
 
-- `domain`: You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access.
-- `proxy`: This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. 
-- `listener`: Defines the host, port, and protocol for a proxy within the mesh.
+- **domain**: `greymatter get domain domain-ping-pong` You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access. It also handles ingress TLS configuration, i.e. connections between proxies.
+- **proxy**: `greymatter get proxy proxy-ping-pong` This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. This is the place to add filters to the proxy, which is like middlew
+- **listener**: `greymatter get listener listener-ping-pong` Defines the host, port, and protocol for a proxy within the mesh.
 
 **The HOW**: objects that define how a service handles requests
 
-- `route`: Defines a path that the proxy knows about. _"When a request comes in with the path `/ping`, I should do something about it!"_
-- `shared_rules`: This object sets up traffic rules, telling the proxy how to route a path. This is where you could implement traffic shadowing or A/B testing.
+- **route**: `greymatter get route route-ping-pong` Defines a path that the proxy knows about. _"When a request comes in with the path `/ping`, I should do something about it!"_
+- **shared_rules**: `greymatter get shared_rules shared-rules-ping-pong` This object sets up traffic rules, telling the proxy how to route a path. This is where you could implement traffic shadowing or A/B testing.
 
-**The WHERE**: the object that tells a service where other network-addressable things live
+**The WHERE**: The object that tells a service where other network-addressable things live
 
-- `cluster`: Lists IP addresses and ports where requests can be sent
+- **cluster**: `greymatter get cluster cluster-ping-pong` Lists IP addresses and ports where requests can be sent
 
 Below you'll see a visualization of how the Ping Pong service is configured and how all these objects relate to one another. Circles overlap where the objects link. `domain` is the parent object of `proxy`, `listener`, and `route`. There is only one route defined for this service, the root route `/`, which points to the ping-pong service cluster via a `shared_rules` definition.
 
@@ -77,7 +79,6 @@ An important thing to note here is that the Ping Pong cluster is not directly ti
 
 ![ping-pong-config-1](./assets/pingpong-diagram.png)
 
-_\*When we talk about a "Service" in the mesh, we are referring to a pair of sidecar + service. Remember, the sidecar is what really represents the service as a "citizen" of the mesh._
 
 ### Routing
 
