@@ -50,7 +50,7 @@ When we configure the mesh, the Control API sends our updates off to Control. Co
 
 We've talked about the "physical" components of the mesh - a proxy, a discovery/configuration service, and an API service.
 
-The Grey Matter API implements an abstraction layer on top of this software. This takes the form of json objects, each with unique roles that logically isolate parts of the configuration for fine-grained control and modularity.
+The Grey Matter API implements an abstraction layer on top of this software. This takes the form of json objects that logically isolate parts of the configuration for fine-grained control and modularity.
 
 Here are the Grey Matter API objects that represent a service\* in the mesh. These configurations answer the questions, "Who am I?" "How should I handle requests?" and "Where do other services live?"
 
