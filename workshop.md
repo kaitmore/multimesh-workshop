@@ -6,6 +6,8 @@ Multimesh refers to a deployment model which consists of two or more service mes
 
 The objective for today is to get your mesh to communicate with your partner's. In addition to the core Grey Matter services, there are two additional services deployed in your mesh: the Ping Pong service and an egress Edge proxy. We're going to configure the Ping Pong service to play a game with the other mesh, and then update this configuration to use the egress proxy as a bridge between meshes.
 
+The first half of this workshop talks through what a mesh is, what Grey Matter does, and how the configuration API works. If you're already a mesh master, feel free to start from [Multimesh Communication: Part I Service to Ingress Edge Setup](#multimesh-communication-part-i-service-to-ingress-edge-setup)
+
 ## Setup
 
 You should have received keys to an already running EC2 instance. To get started, log in to your EC2 and run the following command:
@@ -63,29 +65,26 @@ Here are the Grey Matter API objects that represent a service\* in the mesh. The
 
 _\*When we talk about a "Service" in the mesh, we are referring to a pair of sidecar + service. Remember, the sidecar is what really represents the service as a "citizen" of the mesh._
 
-Read through each object and run the corresponding command to see an example. Note down any questions you have while going through this. Try not to get too caught up in the details here, focus on understanding the general purpose behind each object.
-
 **The WHO**: objects that make up the identity of the service
 
-- **domain**: `greymatter get domain domain-ping-pong` You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access. It also handles ingress TLS configuration, i.e. connections between proxies.
-- **proxy**: `greymatter get proxy proxy-ping-pong` This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. This is the place to add filters to the proxy which is like middleware.
-- **listener**: `greymatter get listener listener-ping-pong` Defines the host, port, and protocol for a proxy within the mesh.
+- **domain**: You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access. It also handles ingress TLS configuration, i.e. connections between proxies.
+- **proxy**: This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label.
+- **listener**: Defines the host, port, and protocol for a proxy within the mesh.
 
 **The HOW**: objects that define how a service handles requests
 
-- **route**: `greymatter get route route-ping-pong` Registers a path with the proxy and configures any necessary path rewrites or redirects
-- **shared_rules**: `greymatter get shared_rules shared-rules-ping-pong` Sets up traffic rules, telling the proxy how to route a path. This is where you control load balancing and could implement traffic shadowing or A/B testing.
+- **route**: Registers a path with the proxy and configures any necessary path rewrites or redirects
+- **shared_rules**: Sets up traffic rules, telling the proxy how to route a path. This is where you control load balancing and could implement traffic shadowing or A/B testing.
 
 **The WHERE**: The object that tells a service where other network-addressable things live
 
-- **cluster**: `greymatter get cluster cluster-ping-pong` Lists IP addresses and ports where requests can be sent
+- **cluster**: Lists IP addresses and ports where requests can be sent
 
 Below you'll see a visualization of how the Ping Pong service is configured and how all these objects relate to one another. Circles overlap where the objects link. `domain` is the parent object of `proxy`, `listener`, and `route`. There is only one route defined for this service, the root route `/`, which points to the ping-pong service cluster via a `shared_rules` definition.
 
 An important thing to note here is that the Ping Pong cluster is not directly tied to the service itself. This cluster object can be used by any other service via a route:
 
 ![ping-pong-config-1](./assets/pingpong-diagram.png)
-
 
 ### Routing
 
@@ -110,7 +109,7 @@ service::0.0.0.0:3000::cx_total::0
 ...
 ```
 
-The Ping Pong sidecar knows about 2 other `clusters`: GM Control (`xds_cluster`), e.g., the thing that gave it it's configuration, and the actual Ping Pong `service`. From the Ping Pong sidecar's point of view, these are the only clusters that exist in the mesh!
+The Ping Pong sidecar knows about 2 other `clusters`: GM Control (`xds_cluster`), e.g., the thing that gave it it's configuration, and the actual Ping Pong `service`. From the Ping Pong sidecar's point of view, these are the only clusters that exist in the mesh.
 
 To get a service to "know about" another and end up in that list of clusters, we need to configure 3 objects: `cluster`, `route`, and `shared_rules`. If you scroll back up to the Ping Pong configuration diagram, you'll see how the route is really the link between the service and the cluster.
 
@@ -125,9 +124,9 @@ Now that we understand the configuration that makes up a service and how we can 
 The goal is for the Ping Pong service in your mesh to talk to the Ping Pong service in your partner's mesh. This service is simply a [passthrough service](https://github.com/dgoldstein1/passthough-service) that has been configured to make requests to `/mesh2/services/ping-pong/latest/` when you /ping it.
 The request should travel from the service, to your partner's Edge node, to your partner's Ping Pong service:
 
-![](./assets/svc-to-meshb.png)
+> _Think through how you would implement the diagram below using the CLI. Talk it out with your partner._
 
-> _Think through how you would implement the diagram above using the CLI. Talk it out with your partner._
+![](./assets/svc-to-meshb.png)
 
 ### Configuring the cluster
 
@@ -137,7 +136,13 @@ The first step is to configure a `cluster` that points to your partner's mesh. I
 
 Trade IP addresses with your partner.
 
-Open `cluster-mesh-2.json` by running `vim cluster-mesh-2.json`. There are a couple things to note here:
+Open `cluster-mesh-2.json` by running:
+
+```sh
+vim cluster-mesh-2.json
+``` 
+
+There are a couple things to note here:
 
 - The `ssl_config` field defines the credentials that are expected to be present on disk when a proxy routes to this cluster. This has already been filled out for you and the client certs for the Edge node have been added to the Ping Pong sidecar.
 - Notice that the cluster object doesn't link to any other object except the very top level zone object. Clusters can link to as many services as you want via `shared_rules`.
@@ -218,13 +223,23 @@ The second configuration uses an _egress_ edge proxy, which acts as a bridge bet
 
 There is already an `egress-edge` proxy deployed into your environment, we'll just need to tweak the configuration to make this work.
 
-Run `greymatter edit route route-ping-pong-to-mesh-2-slash`, hit `i` to enter interactive mode, and update the `shared_rules_key` to `shared-rules-egress-edge`. To save and apply, run `:wq`. Run `greymatter edit route route-ping-pong-to-mesh-2` and change the `shared_rules_key` to the same `shared-rules-egress-edge`. 
+Run the following and change the `shared_rules_key` to `shared-rules-egress-edge`. Hit `i` to enter interactive mode and `:wq` to save abd apply.
+
+```sh
+# Edit both routes to use the`shared-rules-egress-edge` shared_rules key
+greymatter edit route route-ping-pong-to-mesh-2-slash
+greymatter edit route route-ping-pong-to-mesh-2
+```
 
 Next, create a route for the egress cluster <-> mesh #2:
 
 ```sh
 greymatter create route < route-egress-to-mesh-2.json
 ```
+
+Here's a diagram of the configuration we just implemented:
+
+![](./assets/pingpong-diagram3.png)
 
 Let's confirm that we've set up all the routes correctly for egress-edge. Hit the admin endpoint of the egress-edge proxy by running:
 
