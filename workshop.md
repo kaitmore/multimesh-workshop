@@ -2,18 +2,20 @@
 
 [Multimesh](#multimesh)
 
-1. [setup](#setup)
-2. [The Players](#the-players)
-3. [Controlling the mesh](#controlling-the-mesh)
-4. [Configuring the mesh](#configuring-the-mesh)
-   1. [Routing](#routing)
-5. [Multimesh Communication: Part I](#multimesh-communication-part-i-service-to-ingress-edge-setup)
-   1. [Configuring the cluster](#configuring-the-cluster)
-   2. [Configuring the shared rules](#configuring-the-shared_rules)
-   3. [Configuring the routes](#configuring-the-routes)
-6. [Playing Ping Pong](#playing-ping-pong)
-7. [Multimesh Communication: Part II Egress Edge Proxy Setup](#multimesh-communication-part-ii-egress-edge-proxy-setup)
-8. [Authors](#Authors)
+- [Table of Contents](#table-of-contents)
+- [Multimesh](#multimesh)
+  - [Setup](#setup)
+  - [The players](#the-players)
+  - [Controlling the mesh](#controlling-the-mesh)
+  - [Configuring the mesh](#configuring-the-mesh)
+    - [Routing](#routing)
+  - [Multimesh Communication: Part I Service to Ingress Edge Setup](#multimesh-communication-part-i-service-to-ingress-edge-setup)
+    - [Configuring the cluster](#configuring-the-cluster)
+    - [Configuring the shared_rules](#configuring-the-sharedrules)
+    - [Configuring the routes](#configuring-the-routes)
+  - [Playing ping pong](#playing-ping-pong)
+  - [Multimesh Communication: Part II Egress Edge Proxy Setup](#multimesh-communication-part-ii-egress-edge-proxy-setup)
+  - [Authors](#authors)
 
 # Multimesh
 
@@ -70,7 +72,7 @@ When we configure the mesh, the Control API sends our updates off to Control. Co
 
 > _How do the Control service, the Control API, and the Grey Matter proxy interact?_
 
-## Configuring the Mesh
+## Configuring the mesh
 
 We've talked about the "physical" components of the mesh - a proxy, a discovery/configuration service, and an API service.
 
@@ -162,7 +164,7 @@ There are a couple things to note here:
 - The `ssl_config` field defines the credentials that are expected to be present on disk when a proxy routes to this cluster. This has already been filled out for you and the client certs for the Edge node have been added to the Ping Pong sidecar.
 - Notice that the cluster object doesn't link to any other object except the very top level zone object. Clusters can link to as many services as you want via `shared_rules`.
 
-To edit the file, hit `i` for interactive mode. Fill in the instances array with the IP that you noted from your partner. Hit `esc` and then `:wq` to save the file. To apply the file, run:
+To edit the file, hit `i` for interactive mode. Replace `x.x.x.x` in the instances array with the IP that you noted from your partner. Hit `esc` and then `:wq` to save the file. To apply the file, run:
 
 ```sh
 greymatter create cluster < cluster-mesh-2.json
@@ -222,7 +224,7 @@ Pick **one** person to initiate the game and run the following command in anothe
 
 In your logs, you should see something like:
 
-```
+```sh
 Received ping from localhost:8080. Connection type: HTTP/1.1
 hitting back to: https://localhost:8080/mesh2/services/ping-pong/latest/ping?pause=2
 sleeping for 1 s
