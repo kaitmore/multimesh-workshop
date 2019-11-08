@@ -25,7 +25,7 @@ The first half of this workshop talks through what a mesh is, what Grey Matter d
 
 ## Setup
 
-You should have received keys to an already running EC2 instance. To get started, log in to your EC2 and run the following command:
+You should have received keys to an already running EC2 instance. To get started, log in to your EC2 and run `setup`:
 
 ```bash
 # ssh into ec2 if you haven't already
