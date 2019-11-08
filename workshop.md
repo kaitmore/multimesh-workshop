@@ -61,7 +61,7 @@ _\*When we talk about a "Service" in the mesh, we are referring to a pair of sid
 **The WHO**: objects that make up the identity of the service
 
 - **domain**: You can think of a domain as the service's _scope_. By linking a route to a service's domain, you tell it what clusters it can access. It also handles ingress TLS configuration, i.e. connections between proxies.
-- **proxy**: This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label. This is the place to add filters to the proxy which is like middleware.
+- **proxy**: This is what associates our configuration with the "physical" deployment of the sidecar. The `name` field corresponds with a Kubernetes deployment label.
 - **listener**: Defines the host, port, and protocol for a proxy within the mesh.
 
 **The HOW**: objects that define how a service handles requests
@@ -102,7 +102,7 @@ service::0.0.0.0:3000::cx_total::0
 ...
 ```
 
-The Ping Pong sidecar knows about 2 other `clusters`: GM Control (`xds_cluster`), e.g., the thing that gave it it's configuration, and the actual Ping Pong `service`. From the Ping Pong sidecar's point of view, these are the only clusters that exist in the mesh!
+The Ping Pong sidecar knows about 2 other `clusters`: GM Control (`xds_cluster`), e.g., the thing that gave it it's configuration, and the actual Ping Pong `service`. From the Ping Pong sidecar's point of view, these are the only clusters that exist in the mesh.
 
 To get a service to "know about" another and end up in that list of clusters, we need to configure 3 objects: `cluster`, `route`, and `shared_rules`. If you scroll back up to the Ping Pong configuration diagram, you'll see how the route is really the link between the service and the cluster.
 
@@ -129,7 +129,13 @@ The first step is to configure a `cluster` that points to your partner's mesh. I
 
 Trade IP addresses with your partner.
 
-Open `cluster-mesh-2.json` by running `vim cluster-mesh-2.json`. There are a couple things to note here:
+Open `cluster-mesh-2.json` by running:
+
+```sh
+vim cluster-mesh-2.json
+``` 
+
+There are a couple things to note here:
 
 - The `ssl_config` field defines the credentials that are expected to be present on disk when a proxy routes to this cluster. This has already been filled out for you and the client certs for the Edge node have been added to the Ping Pong sidecar.
 - Notice that the cluster object doesn't link to any other object except the very top level zone object. Clusters can link to as many services as you want via `shared_rules`.
@@ -188,7 +194,7 @@ You and your partner should follow the logs for the Ping Pong service in your re
 kubectl logs $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c ping-pong -f
 ```
 
-Pick **one** person to initiate the game and run the following command in another tab. You'll have to l
+Pick **one** person to initiate the game and run the following command in another tab.
 
 `curl -k --cert client.crt --key client.key https://$PUBLIC_IP:30000/services/ping-pong/latest/serve`
 
@@ -210,7 +216,13 @@ The second configuration uses an _egress_ edge proxy, which acts as a bridge bet
 
 There is already an `egress-edge` proxy deployed into your environment, we'll just need to tweak the configuration to make this work.
 
-Run `greymatter edit route route-ping-pong-to-mesh-2-slash`, hit `i` to enter interactive mode, and update the `shared_rules_key` to `shared-rules-egress-edge`. To save and apply, run `:wq`. Do the same for `route-ping-pong-to-mesh-2`.
+Run the following and change the `shared_rules_key` to `shared-rules-egress-edge`. Hit `i` to enter interactive mode and `:wq` to save abd apply.
+
+```sh
+# Edit both routes to use the`shared-rules-egress-edge` shared_rules key
+greymatter edit route route-ping-pong-to-mesh-2-slash
+greymatter edit route route-ping-pong-to-mesh-2
+```
 
 Next, create a route for the egress cluster <-> mesh #2:
 
