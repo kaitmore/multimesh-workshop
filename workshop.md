@@ -1,4 +1,19 @@
-[TOC]
+# Table of Contents
+
+[Multimesh](#multimesh)
+
+1. [setup](#setup)
+2. [The Players](#The Players)
+3. [Controlling the mesh](#Controlling The Mesh)
+4. [Configuring the mesh](#Configuring the Mesh)
+   1. [Routing](#Routing)
+5. [Multimesh Communication: Part I](#Multimesh Communication: Part I Service to Ingress Edge Setup)
+   1. [Configuring the cluster](#Configuring the cluster)
+   2. [Configuring the shared_rules](#configuring the shared_rules)
+   3. [Configuring the routes](#Configuring the routes)
+6. [Playing Ping Pong](#Playing ping pong)
+7. [Multimesh Communication: Part II Egress Edge Proxy Setup](#Multimesh Communication: Part II Egress Edge Proxy Setup)
+8. [Authors](#Authors)
 
 # Multimesh
 
@@ -140,7 +155,7 @@ Open `cluster-mesh-2.json` by running:
 
 ```sh
 vim cluster-mesh-2.json
-``` 
+```
 
 There are a couple things to note here:
 
