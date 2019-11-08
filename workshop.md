@@ -238,7 +238,7 @@ The second configuration uses an _egress_ edge proxy, which acts as a bridge bet
 
 There is already an `egress-edge` proxy deployed into your environment, we'll just need to tweak the configuration to make this work.
 
-Run the following and change the `shared_rules_key` to `shared-rules-egress-edge`. Hit `i` to enter interactive mode and `:wq` to save abd apply.
+Run the following and change the `shared_rules_key` to `shared-rules-egress-edge`. Hit `i` to enter interactive mode and `:wq` to save and apply.
 
 ```sh
 # Edit both routes to use the`shared-rules-egress-edge` shared_rules key
