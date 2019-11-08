@@ -1,3 +1,5 @@
+[TOC]
+
 # Multimesh
 
 Multimesh refers to a deployment model which consists of two or more service meshes that can communicate with each other. In this workshop, we'll walk through two different ways to accomplish this pattern and learn a little more about the Grey Matter mesh along the way.
@@ -8,25 +10,30 @@ The objective for today is to get your mesh to communicate with your partner's. 
 
 You should have received keys to an already running EC2 instance. To get started, log in to your EC2 and run the following command:
 
-`setup`
+```bash
+# ssh into ec2 if you haven't already
+ssh -i certificate.pem ubuntu@your-ec2-instance.compute-1.amazonaws.com
+# start the mesh on the ec2 instance
+setup
+```
 
 You'll be prompted for the username and password that you use to log in to [Nexus](https://nexus.production.deciphernow.com/). The setup will take 3-5min, so go ahead and read the next section while you wait. If the setup was successful, you should see `The mesh is ready at https://$PUBLIC_IP:30000 !` printed to the console.
 
 ## The players
 
-Before we get into multiple meshes, let's talk about what makes up a single mesh. At it's most basic, the Grey Matter mesh is comprised of the following software:
+Before we get into multiple meshes, let's talk about what makes up a single mesh. At it's most basic, the Grey Matter mesh is comprised of the following:
 
-- Grey Matter Proxy
-- Grey Matter Control
-- Grey Matter Control API
+- [Grey Matter Proxy](https://github.com/deciphernow/gm-proxy)
+- [Grey Matter Control](https://github.com/deciphernow/gm-control)
+- [Grey Matter Control API](https://github.com/deciphernow/gm-control-api)
 
 The Proxy can be deployed in different ways - either as a standalone proxy or as a **sidecar** proxy that sits alongside each microservice in the mesh.
 
 In a typical deployment, we have a gateway that handles the initial authentication/authorization checks and is aware of all the sidecars in the mesh. This is the standalone proxy deployment we usually call the "Edge" node, because it handles **north-south traffic**, or requests coming in and out the mesh.
 
-The sidecar, (remember, same proxy, configured differently), represents the service it sits in front of - it's the only thing that knows about where the actual service lives and how to connect to it. Sidecars usually have a smaller scope, that is they typically aren't configured to know about every other sidecar in the mesh like Edge does. They only know about a subset of other sidecars. We call this communcation between sidecars **east-west traffic**.
+The sidecar, (remember, same proxy, configured differently), represents the service it sits in front of - it's the only thing that knows about where the actual service lives and how to connect to it. Sidecars usually have a smaller scope. They typically aren't configured to know about every other sidecar in the mesh like Edge does. They only know about a subset of other sidecars. We call this communication between sidecars **east-west traffic**.
 
-This network of proxies is what we mean when we say _mesh_.
+This network of proxies is what we mean when we say _mesh_. The term *mesh* originates from an overall framework of using [smaller, dynamic nodes to route traffic](https://en.wikipedia.org/wiki/Mesh_networking).
 
 ![](https://philcalcado.com/img/service-mesh/mesh1.png)
 
@@ -40,7 +47,7 @@ So how do these proxies "know about" each other? How do they handle authenticati
 
 Grey Matter Control is the piece that performs service discovery ("Where do all the sidecars live?") and dynamic distribution of configuration ("Here's your new configuration, sidecar!"). That means we can configure the mesh even after it's been deployed, which is a big deal! In the olden days, configuration was static, and in order to make changes, services would have to be redeployed with updated configuration.
 
-The last piece is the Control API service - this is how we the developers actually interact with the control plane and make it do cool stuff. The Control API server holds and manages the configuration of all proxies throughout the Grey Matter Mesh.
+The last piece is the Control API service - this is how we the developers actually interact with the control plane and make it do cool stuff! The Control API server holds and manages the configuration of all proxies throughout the Grey Matter Mesh.
 
 When we configure the mesh, the Control API sends our updates off to Control. Control turns our configuration into something that the proxy understands and then distributes that to the relevant sidecars.
 
@@ -90,7 +97,7 @@ In your terminal, run the following command, which will exec into the Ping Pong 
 kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c sidecar curl localhost:8001/clusters
 ```
 
-This endpoint lists all the `clusters`, or network addresable locations, that our Ping Pong Service has been configured to route to. You should see something like:
+This endpoint lists all the `clusters`, or network addressable locations, that our Ping Pong Service has been configured to route to. You should see something like:
 
 ```sh
 xds_cluster::10.100.12.42:50000::cx_active::1
@@ -109,7 +116,7 @@ To get a service to "know about" another and end up in that list of clusters, we
 
 > _Try comparing the Ping Pong service clusters to the Edge service clusters. How and why are they different? To see edge clusters, you can run `kubectl exec -it $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^edge') curl http://localhost:8001/clusters`_
 
-_*The admin endpoint is a great tool for debugging the mesh. All the proxies in this mesh are deployed with the admin port exposed on 8001. There are many other endpoints besides /cluster that you can explore to understand how the proxy was configured._
+_*The admin endpoint is a great tool for debugging the mesh. All the proxies in this mesh are deployed with the admin port exposed on 8001. There are many other endpoints besides /cluster that you can explore to understand how the proxy was configured. See the [envoy admin docs](https://www.envoyproxy.io/docs/envoy/latest/operations/admin) for more detailed info._
 
 ## Multimesh Communication: Part I Service to Ingress Edge Setup
 
@@ -211,7 +218,7 @@ The second configuration uses an _egress_ edge proxy, which acts as a bridge bet
 
 There is already an `egress-edge` proxy deployed into your environment, we'll just need to tweak the configuration to make this work.
 
-Run `greymatter edit route route-ping-pong-to-mesh-2-slash`, hit `i` to enter interactive mode, and update the `shared_rules_key` to `shared-rules-egress-edge`. To save and apply, run `:wq`. Do the same for `route-ping-pong-to-mesh-2`.
+Run `greymatter edit route route-ping-pong-to-mesh-2-slash`, hit `i` to enter interactive mode, and update the `shared_rules_key` to `shared-rules-egress-edge`. To save and apply, run `:wq`. Run `greymatter edit route route-ping-pong-to-mesh-2` and change the `shared_rules_key` to the same `shared-rules-egress-edge`. 
 
 Next, create a route for the egress cluster <-> mesh #2:
 
@@ -237,7 +244,7 @@ mesh2::54.80.76.176:30000::cx_connect_fail::0
 mesh2::54.80.76.176:30000::cx_total::2
 ```
 
-Follow the logs for Ping Pong again:
+This validates that the egress-edge is looking for a cluster `mesh2` and has found it at the endpoint `54.80.76.176:30000`. Follow the logs for Ping Pong again:
 
 ```sh
 kubectl logs $(kubectl get pods --template '{{range .items}}{{.metadata.name}}{{"\n"}}{{end}}' | grep '^ping-pong') -c ping-pong -f
@@ -258,4 +265,5 @@ You should see all the requests from the Ping Pong service.
 ## Authors
 Kaitlin Moreno - kaitlin.moreno@deciphernow.com
 
-Thanks to [David Goldstein](http://www.davidcharlesgoldstein.com) for his work developing the multimesh Ping Pong example!
+Thanks to [David Goldstein](http://www.davidcharlesgoldstein.com?ping-pong-multimesh) for his work developing the multimesh Ping Pong example!
+

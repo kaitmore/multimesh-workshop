@@ -26,8 +26,7 @@ You'll also need to get the name of the key-pair you use to login to AWS ec2 ins
 Using the security group ID returned from the first command and your key name, execute:
 
 ```sh
-aws ec2 run-instances --image-id ami-09209f6d45abae71c
- --count 1 --key-name <key-pair-name> --instance-type t2.large --security-group-ids <security-group-id>
+aws ec2 run-instances --image-id ami-09209f6d45abae71c  --count 1 --key-name <key-pair-name> --instance-type t2.large --security-group-ids <security-group-id>
 ```
 
 Once the instance is up, you can start working through the [workshop material.](https://github.com/kaitmore/multimesh-workshop/blob/master/workshop.md)
