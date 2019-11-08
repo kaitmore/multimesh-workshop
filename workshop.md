@@ -1,7 +1,5 @@
 # Table of Contents
 
-[Multimesh](#multimesh)
-
 - [Table of Contents](#table-of-contents)
 - [Multimesh](#multimesh)
   - [Setup](#setup)
